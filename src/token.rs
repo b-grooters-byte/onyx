@@ -1,21 +1,55 @@
+use std::collections::HashMap;
+
 #[derive(PartialEq, Debug, Clone, Copy)]
 pub enum TokenType {
-    Add,
+    And,
     Assign,
+    Asterisk,
+    Tilde,
     Comma,
+    Else,
     Eof,
+    Equal,
+    False,
     Float,
     Function,
+    GreaterThan,
     Identifier,
+    If,
     Illegal,
     Integer,
     Let,
+    LessThan,
     LBrace,
     LParen,
+    Minus,
+    Not,
+    NotEqual,
+    Or,
+    Plus,
     RBrace,
+    Return,
     RParen,
-    Substract,
     Semicolon,
+    ShortCircuitAnd,
+    ShortCircuitOr,
+    Slash,
+    True,
+}
+
+lazy_static! {
+    static ref KEYWORDS: HashMap<&'static str, TokenType> = {
+        let mut map = HashMap::new();
+        map.insert("else", TokenType::Else);
+        map.insert("false", TokenType::False);
+        map.insert("if", TokenType::If);
+        map.insert("fn", TokenType::Function);
+        map.insert("let", TokenType::Let);
+        map.insert("return", TokenType::Return);
+        map.insert("true", TokenType::True);
+        
+        map
+    };
 }
 
 #[derive(Debug, PartialEq, Clone)]
@@ -38,5 +72,12 @@ impl Token {
 
     pub fn literal(&self) -> String {
         self.literal.clone()
+    }
+}
+
+pub fn map_identifier(ident: &str) -> TokenType {
+    match KEYWORDS.get(ident) {
+        Some(token_type) => *token_type,
+        None => TokenType::Identifier,
     }
 }
