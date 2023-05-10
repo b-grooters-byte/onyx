@@ -10,8 +10,9 @@ Onyx is an interpreter built in Rust. The project is being used to explore comma
 ## License
 Onyx is a free, open source project. All code in this project is dual licensed under either: 
 
-* MIT License 
-* Apache License 
+* MIT License  ([LICENSE-MIT](LICENSE-MIT) or [http://opensource.org/licenses/MIT](http://opensource.org/licenses/MIT))
+* Apache License ([LICENSE-APACHE](LICENSE-APACHE) or [http://www.apache.org/licenses/LICENSE-2.0](http://www.apache.org/licenses/LICENSE-2.0))
+
 
 at your discretion. Dual licensing under MIT and Apache is the de-facto standard approach in the Rust ecosystem. 
 
