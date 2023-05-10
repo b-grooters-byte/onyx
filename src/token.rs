@@ -18,6 +18,7 @@ pub enum TokenType {
     Semicolon,
 }
 
+#[derive(Debug, PartialEq, Clone)]
 pub struct Token {
     pub token_type: TokenType,
     pub literal: String,
@@ -38,5 +39,4 @@ impl Token {
     pub fn literal(&self) -> String {
         self.literal.clone()
     }
-
 }
