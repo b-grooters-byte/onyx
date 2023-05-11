@@ -84,7 +84,7 @@ impl Lexer {
                         self.read_char();
                         Token::new(TokenType::AndAssign, format!("{}{}", ch, self.ch))
                     },
-                    _ => Token::new(TokenType::Illegal, self.ch.to_string()),
+                    _ => Token::new(TokenType::And, self.ch.to_string())
                 },
             '|' => 
                 match self.peek_char() {
@@ -98,10 +98,24 @@ impl Lexer {
                         self.read_char();
                         Token::new(TokenType::OrAssign, format!("{}{}", ch, self.ch))
                     },
-                    _ => Token::new(TokenType::Illegal, self.ch.to_string()),
+                    _ => Token::new(TokenType::Or, self.ch.to_string()),
                 },
-            '/' => Token::new(TokenType::Slash, self.ch.to_string()),
-            '*' => Token::new(TokenType::Asterisk, self.ch.to_string()),
+            '/' => 
+                if self.peek_char() == '=' {
+                    let ch = self.ch;
+                    self.read_char();
+                    Token::new(TokenType::DivideAssign, format!("{}{}", ch, self.ch))
+                } else {
+                    Token::new(TokenType::Slash, self.ch.to_string())
+                },                
+            '*' => 
+                if self.peek_char() == '=' {
+                    let ch = self.ch;
+                    self.read_char();
+                    Token::new(TokenType::MultiplyAssign, format!("{}{}", ch, self.ch))
+                } else {
+                    Token::new(TokenType::Asterisk, self.ch.to_string())
+                },
             '!' => {
                 if self.peek_char() == '=' {
                     let ch = self.ch;
@@ -111,6 +125,14 @@ impl Lexer {
                     Token::new(TokenType::Not, self.ch.to_string())
                 }
             },
+            '%' => 
+                if self.peek_char() == '=' {
+                    let ch = self.ch;
+                    self.read_char();
+                    Token::new(TokenType::RemainderAssign, format!("{}{}", ch, self.ch))
+                } else {
+                    Token::new(TokenType::Remainder, self.ch.to_string())
+                },
             '\0' => Token::new(TokenType::Eof, self.ch.to_string()),
             _ => {
                 if self.ch.is_alphabetic() {
