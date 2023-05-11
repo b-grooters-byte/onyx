@@ -1,3 +1,5 @@
+# Operators 
+
 Onyx supports a set of arithmetic, logical, and bitwise operators. Operators 
 in Onyx are not overloadable.
 

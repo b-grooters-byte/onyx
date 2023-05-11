@@ -41,7 +41,7 @@ pub struct Identifier {
 }
 
 impl Identifier {
-    fn new(token: token::Token, value: String) -> Self {
+    pub fn new(token: token::Token, value: String) -> Self {
         Identifier {
             token,
             value,
