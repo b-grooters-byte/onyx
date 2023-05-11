@@ -4,7 +4,9 @@ extern crate lazy_static;
 use colored::Colorize;
 
 mod test;
+mod ast;
 mod lexer;
+mod parser;
 mod token;
 
 
