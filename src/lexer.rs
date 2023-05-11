@@ -26,32 +26,79 @@ impl Lexer {
         }
         println!("next_token char: {}", self.ch);
          let token = match self.ch {
-            '=' => Token::new(TokenType::Assign, self.ch.to_string()),
+            '=' => 
+                if self.peek_char() == '=' {
+                    let ch = self.ch;
+                    self.read_char();
+                    Token::new(TokenType::Equal, format!("{}{}", ch, self.ch))
+                } else {
+                    Token::new(TokenType::Assign, self.ch.to_string())
+                },
             ';' => Token::new(TokenType::Semicolon, self.ch.to_string()),
             '(' => Token::new(TokenType::LParen, self.ch.to_string()),
             ')' => Token::new(TokenType::RParen, self.ch.to_string()),
             '{' => Token::new(TokenType::LBrace, self.ch.to_string()),
             '}' => Token::new(TokenType::RBrace, self.ch.to_string()),
             ',' => Token::new(TokenType::Comma, self.ch.to_string()),
-            '+' => Token::new(TokenType::Plus, self.ch.to_string()),
-            '-' => Token::new(TokenType::Minus, self.ch.to_string()),
-            '<' => Token::new(TokenType::LessThan, self.ch.to_string()),
-            '>' => Token::new(TokenType::GreaterThan, self.ch.to_string()),
-            '&' => 
-                if self.peek_char() == '&' {
+            '+' => 
+                if self.peek_char() == '=' {
                     let ch = self.ch;
                     self.read_char();
-                    Token::new(TokenType::ShortCircuitAnd, format!("{}{}", ch, self.ch))
+                    Token::new(TokenType::AddAssign, format!("{}{}", ch, self.ch))
                 } else {
-                    Token::new(TokenType::Illegal, self.ch.to_string())
+                    Token::new(TokenType::Plus, self.ch.to_string())
+                },
+            '-' =>  
+                if self.peek_char() == '=' {
+                    let ch = self.ch;
+                    self.read_char();
+                    Token::new(TokenType::SubtractAssign, format!("{}{}", ch, self.ch))
+                } else {
+                    Token::new(TokenType::Minus, self.ch.to_string())
+                },
+            '<' => 
+                if self.peek_char() == '=' {
+                    let ch = self.ch;
+                    self.read_char();
+                    Token::new(TokenType::LessThanOrEqual, format!("{}{}", ch, self.ch))
+                } else {
+                    Token::new(TokenType::LessThan, self.ch.to_string())
+                },
+            '>' => 
+                if self.peek_char() == '=' {
+                    let ch = self.ch;
+                    self.read_char();
+                    Token::new(TokenType::GreaterThanOrEqual, format!("{}{}", ch, self.ch))
+                } else {
+                    Token::new(TokenType::GreaterThan, self.ch.to_string())
+                },
+            '&' => 
+                match self.peek_char() {
+                    '&' => {
+                        let ch = self.ch;
+                        self.read_char();
+                        Token::new(TokenType::ShortCircuitAnd, format!("{}{}", ch, self.ch))
+                    },
+                    '=' => {
+                        let ch = self.ch;
+                        self.read_char();
+                        Token::new(TokenType::AndAssign, format!("{}{}", ch, self.ch))
+                    },
+                    _ => Token::new(TokenType::Illegal, self.ch.to_string()),
                 },
             '|' => 
-                if self.peek_char() == '|' {
-                    let ch = self.ch;
-                    self.read_char();
-                    Token::new(TokenType::ShortCircuitOr, format!("{}{}", ch, self.ch))
-                } else {
-                    Token::new(TokenType::Or, self.ch.to_string())
+                match self.peek_char() {
+                    '|' => {
+                        let ch = self.ch;
+                        self.read_char();
+                        Token::new(TokenType::ShortCircuitOr, format!("{}{}", ch, self.ch))
+                    },
+                    '=' => {
+                        let ch = self.ch;
+                        self.read_char();
+                        Token::new(TokenType::OrAssign, format!("{}{}", ch, self.ch))
+                    },
+                    _ => Token::new(TokenType::Illegal, self.ch.to_string()),
                 },
             '/' => Token::new(TokenType::Slash, self.ch.to_string()),
             '*' => Token::new(TokenType::Asterisk, self.ch.to_string()),
@@ -118,121 +165,3 @@ impl Lexer {
 
 }
 
-#[cfg(test)]
-mod test {
-    use crate::token::{Token, TokenType};
-
-    use super::Lexer;
-
-    #[test]
-    fn test_next_token() {
-        let input = "=+(){},;";
-        let tests = vec![
-            TokenType::Assign,
-            TokenType::Plus,
-            TokenType::LParen,
-            TokenType::RParen,
-            TokenType::LBrace,
-            TokenType::RBrace,
-            TokenType::Comma,
-            TokenType::Semicolon,
-        ];
-
-        let mut l = Lexer::new(input);
-
-        for tt in tests {
-            let tok = l.next_token();
-
-            assert_eq!(tok.token_type(), tt);
-        }
-    }
-
-    #[test]
-    fn test_token_stream_basic() {
-        let input = "let five = 5;
-            let ten = 10;
-            let add = fn(x, y) {
-                x + y;
-            };
-            let result = add(five, ten);";
-        let mut expected: Vec<Token> = vec![
-            Token::new(TokenType::Let, "let".to_string()),
-            Token::new(TokenType::Identifier, "five".to_string()),
-            Token::new(TokenType::Assign, "=".to_string()),
-            Token::new(TokenType::Integer, "5".to_string()),
-            Token::new(TokenType::Semicolon, ";".to_string()),
-            Token::new(TokenType::Let, "let".to_string()),
-            Token::new(TokenType::Identifier, "ten".to_string()),
-            Token::new(TokenType::Assign, "=".to_string()),
-            Token::new(TokenType::Integer, "10".to_string()),
-            Token::new(TokenType::Semicolon, ";".to_string()),
-            Token::new(TokenType::Let, "let".to_string()),
-            Token::new(TokenType::Identifier, "add".to_string()),
-            Token::new(TokenType::Assign, "=".to_string()),
-            Token::new(TokenType::Function, "fn".to_string()),
-            Token::new(TokenType::LParen, "(".to_string()),
-            Token::new(TokenType::Identifier, "x".to_string()),
-            Token::new(TokenType::Comma, ",".to_string()),
-            Token::new(TokenType::Identifier, "y".to_string()),
-            Token::new(TokenType::RParen, ")".to_string()),
-            Token::new(TokenType::LBrace, "{".to_string()),
-            Token::new(TokenType::Identifier, "x".to_string()),
-            Token::new(TokenType::Plus, "+".to_string()),
-            Token::new(TokenType::Identifier, "y".to_string()),
-            Token::new(TokenType::Semicolon, ";".to_string()),
-            Token::new(TokenType::RBrace, "}".to_string()),
-            Token::new(TokenType::Semicolon, ";".to_string()),
-            Token::new(TokenType::Let, "let".to_string()),
-            Token::new(TokenType::Identifier, "result".to_string()),
-            Token::new(TokenType::Assign, "=".to_string()),
-            Token::new(TokenType::Identifier, "add".to_string()),
-            Token::new(TokenType::LParen, "(".to_string()),
-            Token::new(TokenType::Identifier, "five".to_string()),
-            Token::new(TokenType::Comma, ",".to_string()),
-            Token::new(TokenType::Identifier, "ten".to_string()),
-            Token::new(TokenType::RParen, ")".to_string()),
-            Token::new(TokenType::Semicolon, ";".to_string()),
-            Token::new(TokenType::Eof, "\0".to_string()),
-        ];
-
-        let mut lex = Lexer::new(input);
-        for expected_token in expected {
-            let token = lex.next_token();
-            assert_eq!(token, expected_token);
-        }
-    }
-
-    #[test]
-    fn test_token_stream_if_else() {
-        let input = "
-            if five < ten{
-                return true;
-            } else {
-                return false;
-            }
-        ";   
-        let expected = vec![
-            Token::new(TokenType::If, "if".to_string()),
-            Token::new(TokenType::Identifier, "five".to_string()),
-            Token::new(TokenType::LessThan, "<".to_string()),
-            Token::new(TokenType::Identifier, "ten".to_string()),
-            Token::new(TokenType::LBrace, "{".to_string()),
-            Token::new(TokenType::Return, "return".to_string()),
-            Token::new(TokenType::True, "true".to_string()),
-            Token::new(TokenType::Semicolon, ";".to_string()),
-            Token::new(TokenType::RBrace, "}".to_string()),
-            Token::new(TokenType::Else, "else".to_string()),
-            Token::new(TokenType::LBrace, "{".to_string()),
-            Token::new(TokenType::Return, "return".to_string()),
-            Token::new(TokenType::False, "false".to_string()),
-            Token::new(TokenType::Semicolon, ";".to_string()),
-            Token::new(TokenType::RBrace, "}".to_string()),
-            Token::new(TokenType::Eof, "\0".to_string()),
-        ];
-        let mut lex = Lexer::new(input);
-        for expected_token in expected {
-            let token = lex.next_token();
-            assert_eq!(token, expected_token);
-        }
-    }
-}
