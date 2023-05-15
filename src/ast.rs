@@ -4,6 +4,7 @@ use crate::token;
 
 pub trait Node {
     fn token_literal(&self) -> String;
+    fn as_any(&self) -> &dyn std::any::Any;
 }
 
 pub trait Statement: Node {
@@ -51,6 +52,10 @@ impl Identifier {
             value,
         }
     }
+
+    pub fn value(&self) -> &str {
+        &self.value
+    }
 }
 
 impl Expression for Identifier {
@@ -60,6 +65,10 @@ impl Expression for Identifier {
 impl Node for Identifier {
     fn token_literal(&self) -> String {
         self.token.literal()
+    }
+
+    fn as_any(&self) -> &dyn std::any::Any {
+        self
     }
 }
 
@@ -73,8 +82,18 @@ impl Node for LetStatement {
     fn token_literal(&self) -> String {
         self.token.literal()
     }
+
+    fn as_any(&self) -> &dyn std::any::Any {
+        self
+    }
 }
 
 impl Statement for LetStatement {
     fn statement_node(&self) {}
+}
+
+impl LetStatement {
+    pub fn name(&self) -> &Identifier {
+        &self.name
+    }
 }

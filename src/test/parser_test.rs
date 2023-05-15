@@ -1,4 +1,4 @@
-use crate::{lexer, parser};
+use crate::{lexer, parser, ast};
 
 #[test]
 fn test_let_statement() {
@@ -21,8 +21,8 @@ fn test_let_statement() {
     for (i, tt) in expected.iter().enumerate() {
         let stmt = &statements[i];
         assert_eq!(stmt.token_literal(), "let");
-        //let let_stmt = stmt.as_any().downcast_ref::<ast::LetStatement>().unwrap();
-        //assert_eq!(let_stmt.name.token_literal(), *tt);
-        //assert_eq!(let_stmt.name.value, *tt);
+        assert_eq!(stmt.token_literal(), *tt);
+        let let_stmt = stmt.as_any().downcast_ref::<ast::LetStatement>().unwrap();
+        assert_eq!(let_stmt.name().value(), *tt);
     }
 }
