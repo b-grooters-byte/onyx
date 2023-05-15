@@ -26,6 +26,10 @@ impl Program {
         }
     }
 
+    pub fn statements(&self) -> &Vec<Box<dyn Statement>> {
+        &self.statements
+    }
+
     pub fn token_literal(&self) -> String {
         if self.statements.len() > 0 {
             self.statements[0].token_literal()

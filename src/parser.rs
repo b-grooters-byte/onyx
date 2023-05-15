@@ -1,6 +1,6 @@
 use std::{error::Error, fmt::{Display, Formatter}};
 
-use crate::{lexer, token, ast};
+use crate::{lexer, token, ast::{self, Program}};
 
 #[derive(Debug, Clone)]
 pub struct ParseError {
@@ -27,6 +27,8 @@ impl Error for ParseError {
     }
 }
 
+
+
 pub struct Parser {
     lexer: lexer::Lexer,
     cur_token: token::Token,
@@ -34,7 +36,7 @@ pub struct Parser {
 }
 
 impl Parser {
-    fn new(lexer: lexer::Lexer) -> Self {
+    pub fn new(lexer: lexer::Lexer) -> Self {
         let mut p = Parser {
             lexer,
             cur_token: token::Token::new(token::TokenType::Illegal, String::new()),
@@ -50,7 +52,12 @@ impl Parser {
         self.peek_token = self.lexer.next_token();
     }
 
+    pub fn parse_program(&mut self) -> Result<Program, ParseError> {
+        Ok(Program::new())
+    }
+
     fn parse_identifier(&mut self) -> Result<ast::Identifier, ParseError> {
         Ok(ast::Identifier::new(self.cur_token.clone(), self.cur_token.literal()))
     }
+
 }
