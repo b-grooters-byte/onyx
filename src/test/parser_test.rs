@@ -21,7 +21,6 @@ fn test_let_statement() {
     for (i, tt) in expected.iter().enumerate() {
         let stmt = &statements[i];
         assert_eq!(stmt.token_literal(), "let");
-        assert_eq!(stmt.token_literal(), *tt);
         let let_stmt = stmt.as_any().downcast_ref::<ast::LetStatement>().unwrap();
         assert_eq!(let_stmt.name().value(), *tt);
     }

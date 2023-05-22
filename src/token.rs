@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::{collections::HashMap, fmt::Display};
 
 #[derive(PartialEq, Debug, Clone, Copy)]
 pub enum TokenType {
@@ -44,6 +44,12 @@ pub enum TokenType {
     SubtractAssign,
     Slash,
     True,
+}
+
+impl Display for TokenType {
+   fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+         write!(f, "{:?}", self)
+   } 
 }
 
 lazy_static! {

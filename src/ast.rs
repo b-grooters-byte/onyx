@@ -31,6 +31,10 @@ impl Program {
         &self.statements
     }
 
+    pub fn statements_mut(&mut self) -> &mut Vec<Box<dyn Statement>> {
+        &mut self.statements
+    }
+
     pub fn token_literal(&self) -> String {
         if self.statements.len() > 0 {
             self.statements[0].token_literal()
@@ -75,7 +79,7 @@ impl Node for Identifier {
 pub struct LetStatement {
     pub token: token::Token,
     pub name: Identifier,
-    pub value: Box<dyn Expression>,
+    pub value: Option<Box<dyn Expression>>,
 }
 
 impl Node for LetStatement {
@@ -93,6 +97,14 @@ impl Statement for LetStatement {
 }
 
 impl LetStatement {
+pub fn new(token: token::Token, name: Identifier, value: Option<Box<dyn Expression>>) -> Self {
+        LetStatement {
+            token,
+            name,
+            value,
+        }
+    }
+
     pub fn name(&self) -> &Identifier {
         &self.name
     }

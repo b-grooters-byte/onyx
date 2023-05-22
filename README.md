@@ -4,7 +4,7 @@
 [![MIT/Apache 2.0](https://img.shields.io/badge/license-MIT%2FApache-blue.svg)](https://github.com/b-grooters-byte/onyx#license)
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](CODE_OF_CONDUCT.md)
 
-Onyx is an interpreter built in Rust. The project is being used to explore command line, concurrency and async patterns in addition to developing a simple interpeter using Rust.
+Onyx is an interpreter built in Rust. The project is being used to explore command line, concurrency and async patterns in addition to developing a simple interpeter using Rust. Onyx is based on Monkey, the scripting language in Writing an Interpreter in Go by 
 
 ## Getting Started
 

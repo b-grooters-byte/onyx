@@ -24,7 +24,6 @@ impl Lexer {
         while self.ch.is_whitespace() {
             self.read_char();
         }
-        println!("next_token char: {}", self.ch);
          let token = match self.ch {
             '=' => 
                 if self.peek_char() == '=' {
